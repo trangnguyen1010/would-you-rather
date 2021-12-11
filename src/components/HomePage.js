@@ -89,7 +89,7 @@ class HomePage extends Component {
                     <div className="ml-auto text-muted">
                       <Link
                         to={{
-                          pathname: `/question/${questions[answer].id}`,
+                          pathname: `/question/${answer}`,
                           state: {
                             type:
                               this.state.questionList === UNANSWERED

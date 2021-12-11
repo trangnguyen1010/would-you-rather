@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
-import { Grid, Site } from "tabler-react";
+import { NavLink, withRouter } from "react-router-dom";
+import { Grid, Nav, Site } from "tabler-react";
 import logo from "../assets/logo.svg";
 import { setAuthedUser } from "../actions/authedUser";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -46,11 +46,9 @@ class SiteWrapper extends Component {
 
     const accountDropdownOptions = authedUser
       ? {
-          avatarURL: users[authedUser].avatarURL,
           name: users[authedUser].name,
           options: [
             {
-              icon: "log-out",
               value: "Sign Out",
               onClick: () => this.logOut(),
             },
@@ -70,6 +68,11 @@ class SiteWrapper extends Component {
         headerProps={{
           alt: "Would you rather",
           imageURL: logo,
+          navItems: (
+            <Nav.Item type="div" className="d-none d-md-flex">
+              {loginLink}
+            </Nav.Item>
+          ),
           accountDropdown: accountDropdownOptions,
         }}
         navProps={{ itemsObjects: navBarItems }}
@@ -95,4 +98,4 @@ function mapStateToProps({ setAuthedUser, users }) {
   };
 }
 
-export default connect(mapStateToProps)(SiteWrapper);
+export default withRouter(connect(mapStateToProps)(SiteWrapper));

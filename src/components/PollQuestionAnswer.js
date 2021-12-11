@@ -29,9 +29,8 @@ class PollQuestionAnswer extends Component {
   };
   render() {
     const { question } = this.props;
-    console.log("poll answer", question);
     return (
-      <Form onChange={this.handleChange} onSubmit={this.handleSubmit}>
+      <form onChange={this.handleChange} onSubmit={this.handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label className="text-muted">Choose one option</Form.Label>
           {this.state.error && (
@@ -59,7 +58,7 @@ class PollQuestionAnswer extends Component {
         >
           Submit Answer
         </Button>
-      </Form>
+      </form>
     );
   }
 }

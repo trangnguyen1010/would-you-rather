@@ -17,7 +17,7 @@ class PollQuestion extends Component {
       question.id
     );
 
-    console.log("answer: ", questionAnswered);
+    // console.log("answer: ", questionAnswered);
     return (
       <SiteWrapper>
         <Page.Content>
@@ -44,12 +44,13 @@ class PollQuestion extends Component {
                 <PollQuestionAnswer
                   question={question}
                   author={users[question.author]}
+                  authedUser={setAuthedUser}
                 />
               )}
               {questionAnswered && (
                 <div className="ml-auto text-muted">
                   <Link to={"/"}>
-                    <Button color="primary" size="md" outline>
+                    <Button color="primary" size="md">
                       Return to HomePage
                     </Button>
                   </Link>
