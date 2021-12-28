@@ -40,7 +40,6 @@ export function handleAddQuestion(optionOneText, optionTwoText) {
 export function handleSaveAnswer(id, answer) {
   return (dispatch, getState) => {
     const { setAuthedUser } = getState();
-    console.log("Shared page: ", setAuthedUser, id, answer);
     return saveQuestionAnswer({ authedUser: setAuthedUser, qid: id, answer })
       .then(dispatch(saveAnswer(id, answer, setAuthedUser)))
       .then(dispatch(saveAnswerToAutheduser(setAuthedUser, id, answer)));

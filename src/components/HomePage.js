@@ -1,142 +1,126 @@
-import React, { Component } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
-import { Link, Redirect, withRouter } from "react-router-dom";
-import { Text } from "tabler-react";
+import { withRouter } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import SiteWrapper from "./SiteWrapper";
-import { Button, Container, Row, Col, Card } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 
-const RESULTS = "results";
-const POLL = "poll";
-const ANSWERED = "answered";
-const UNANSWERED = "unanswered";
+const ANSWERED = "ANSWERED";
+const UNANSWERED = "UNANSWERED";
 
-class HomePage extends Component {
-  state = {
-    questionList: UNANSWERED,
-  };
+const HomePage = ({
+  authedUser,
+  answeredQuestion,
+  unAnsweredQuestion,
+  questions,
+  users,
+}) => {
+  const [questionList, setQuestionList] = useState(UNANSWERED);
 
-  changeQuestionList = (e) => {
-    if (!e.target.textContent.toLowerCase().includes(UNANSWERED)) {
-      this.setState({ questionList: ANSWERED });
-    } else {
-      this.setState({ questionList: UNANSWERED });
-    }
-  };
-  render() {
-    const { questions, users, setAuthedUser, answered, unanswered } =
-      this.props;
-    console.log("home page: ", this.props);
-
-    //redirect to Login page if not logged in
-    if (!setAuthedUser) {
-      return <Redirect to="/login" />;
-    }
-
-    return (
-      <SiteWrapper>
-        <Container>
-          <Row>
-            <Col lg={6}>
-              <Button
-                aria-selected={
-                  this.state.questionList === UNANSWERED ? "true" : "false"
-                }
-                className="btn-primary btn-block mb-4"
-                onClick={this.changeQuestionList}
-              >
-                Unanswered questions
-              </Button>
-            </Col>
-            <Col lg={6}>
-              <Button
-                aria-selected={
-                  this.state.questionList === ANSWERED ? "true" : "false"
-                }
-                onClick={this.changeQuestionList}
-                className="btn-primary btn-block mb-4 btn"
-              >
-                Answered Questions
-              </Button>
-            </Col>
-          </Row>
-          <Row>
-            {(this.state.questionList === UNANSWERED
-              ? unanswered
-              : answered
-            ).map((answer) => (
-              <Col key={questions[answer].id} lg={12} xs={12} sm={12} md={12}>
-                <Card className="card card-profile">
-                  <div className="card-profile text-center bg-dark">
-                    <Text className="h3 text-white mx-auto mb-5 mt-5">
-                      {users[questions[answer].author].name}
-                    </Text>
-                  </div>
-                  <Card.Body className="card-body">
-                    <img
-                      src={users[questions[answer].author].avatarURL}
-                      alt="avatar"
-                      className="card-profile-img"
-                    />
-                    <h3 className="text-left mb-3">Would you rather</h3>
-                    <p className="mb-4 h5 text-center">
-                      ...{questions[answer].optionOne.text}...
-                    </p>
-                    <br />
-                    <p className="mb-4 text-center">
-                      <span className="bg-dark text-white text-center">OR</span>
-                    </p>
-                    <div className="ml-auto text-muted">
-                      <Link
-                        to={{
-                          pathname: `/question/${answer}`,
-                          state: {
-                            type:
-                              this.state.questionList === UNANSWERED
-                                ? POLL
-                                : RESULTS,
-                          },
-                        }}
-                      >
-                        <Button color="primary" size="md">
-                          ANSWER
-                        </Button>
-                      </Link>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      </SiteWrapper>
-    );
+  if (!authedUser) {
+    return <Redirect to="/login" />;
   }
-}
+  return (
+    <div className="ui  centered segment ">
+      <div className="ui two column grid centered  ">
+        <div className="six wide column">
+          <div className="ui">
+            <button
+              className="ui primary button fluid"
+              onClick={() => setQuestionList(UNANSWERED)}
+            >
+              Unanswered Questions
+            </button>
+          </div>
+        </div>
 
-function mapStateToProps({ setAuthedUser, users, questions }) {
-  let answered, unanswered;
+        <div className="six wide column">
+          <div className="ui">
+            <button
+              className="ui green button fluid"
+              onClick={() => setQuestionList(ANSWERED)}
+            >
+              Answered Questions
+            </button>
+          </div>
+        </div>
+      </div>
+      {(questionList === UNANSWERED
+        ? unAnsweredQuestion
+        : answeredQuestion
+      ).map((questionId) => (
+        <div key={questionId} className="ui card  fluid">
+          <div className="ui content center aligned ui grey inverted segment text-white">
+            <div className="ui center aligned header">
+              {users[questions[questionId].author].name}
+            </div>
+            <div className=" circular image ui centered aligned">
+              <img
+                className="ui centered circular image"
+                alt=""
+                src={users[questions[questionId].author].avatarURL}
+              />
+            </div>
+          </div>
+          <div className="content">
+            <h2 className="text">Would you rather...</h2>
+            <h5 className="text center aligned">
+              ...{questions[questionId].optionOne.text}
+            </h5>
+            <p className="center aligned">
+              <span className="bg-dark text-white mt-5 p-2">OR</span>
+            </p>
+            <div className="content">
+              <div className="left meta">
+                {users[questions[questionId].author].name} asked
+              </div>
+              <div className="right floated">
+                <Link
+                  to={{
+                    pathname: `/question/${questionId}`,
+                    state: {
+                      type: UNANSWERED ? "poll" : "result",
+                    },
+                  }}
+                >
+                  <button className="button ui primary">Answer</button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const mapStateToProps = (state) => {
+  let answeredQuestion, unAnsweredQuestion;
+  const authedUser = state.setAuthedUser;
+  const questions = state.questions;
+  const users = state.users;
+
   const sort = (a, b) => {
     return (
       new Date(questions[b].timestamp).getTime() -
       new Date(questions[a].timestamp).getTime()
     );
   };
-  if (setAuthedUser) {
-    answered = Object.keys(users[setAuthedUser].answers).sort(sort);
-    unanswered = Object.keys(Object.assign({}, questions)).sort(sort);
-    answered.map(
-      (answer) =>
-        (unanswered = unanswered.filter((unanswered) => answer !== unanswered))
-    );
+  if (authedUser) {
+    answeredQuestion = Object.keys(users[authedUser].answers).sort(sort);
+    unAnsweredQuestion = Object.keys(questions).sort(sort);
+    answeredQuestion.map((answerId) => {
+      unAnsweredQuestion = unAnsweredQuestion.filter(
+        (unanswerId) => answerId !== unanswerId
+      );
+    });
   }
-  return {
-    setAuthedUser,
-    users,
-    questions,
-    answered,
-    unanswered,
-  };
-}
 
+  return {
+    authedUser,
+    answeredQuestion,
+    unAnsweredQuestion,
+    questions,
+    users,
+  };
+};
 export default withRouter(connect(mapStateToProps)(HomePage));

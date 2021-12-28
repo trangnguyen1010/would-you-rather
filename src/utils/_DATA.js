@@ -3,7 +3,7 @@ let users = {
     id: "sarahedo",
     name: "Sarah Edo",
     avatarURL:
-      "https://cangir.github.io/udacity-reactnd-would-you-rather/img/man-1.svg",
+      "https://user-images.githubusercontent.com/61035747/145683673-6a2b824c-64fd-45b0-8c46-62d2bc9803e6.jpg",
     answers: {
       "8xf0y6ziyjabvozdd253nd": "optionOne",
       "6ni6ok3ym7mf1p33lnez": "optionTwo",
@@ -16,7 +16,7 @@ let users = {
     id: "tylermcginnis",
     name: "Tyler McGinnis",
     avatarURL:
-      "https://cangir.github.io/udacity-reactnd-would-you-rather/img/girl.svg",
+      "https://user-images.githubusercontent.com/61035747/147496067-4c484c1e-1177-4fc8-a627-3b349e0c20ba.JPG",
     answers: {
       vthrdm985a262al8qx3do: "optionOne",
       xj352vofupe1dqz9emx13r: "optionTwo",
@@ -27,7 +27,7 @@ let users = {
     id: "johndoe",
     name: "John Doe",
     avatarURL:
-      "https://cangir.github.io/udacity-reactnd-would-you-rather/img/boy-1.svg",
+      "https://user-images.githubusercontent.com/61035747/145683793-43b57624-9f74-42de-87a7-6285cfafbe71.jpg",
     answers: {
       xj352vofupe1dqz9emx13r: "optionOne",
       vthrdm985a262al8qx3do: "optionTwo",

@@ -1,66 +1,60 @@
-import React, { Component } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
-import { Form, FormGroup } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Button from "@restart/ui/esm/Button";
+import { Redirect } from "react-router-dom";
 import { handleSaveAnswer } from "../actions/shared";
 
-class PollQuestionAnswer extends Component {
-  state = {
-    option: "none",
-    error: false,
-  };
-
-  handleChange = (e) => {
-    this.setState({
-      option: e.target.value,
-      error: false,
-    });
-  };
-
-  handleSubmit = (e) => {
+const PollQuestionAnswer = (props) => {
+  const [option, setOption] = useState("none");
+  const [error, setError] = useState(false);
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { option } = this.state;
-    const { dispatch, question } = this.props;
-
-    this.state.option === "none"
-      ? this.setState({ error: true })
-      : dispatch(handleSaveAnswer(question.id, option));
+    option === "none"
+      ? setError(true)
+      : props.dispatch(handleSaveAnswer(props.question.id, option));
+    return <Redirect to={"/"} />;
   };
-  render() {
-    const { question } = this.props;
-    return (
-      <form onChange={this.handleChange} onSubmit={this.handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label className="text-muted">Choose one option</Form.Label>
-          {this.state.error && (
-            <small className="text-danger p-4">please select one option</small>
-          )}
 
-          <Form.Switch
-            label={question.optionOne.text}
-            name="choice"
-            type="radio"
-            value="optionOne"
-            className="pf-auto"
-          />
-          <Form.Switch
-            label={question.optionTwo.text}
-            name="choice"
-            type="radio"
-            value="optionTwo"
-          />
-        </Form.Group>
-        <Button
-          className="btn-primary btn-block btn"
-          type="submit"
-          value="submit answer"
-        >
-          Submit Answer
-        </Button>
-      </form>
-    );
-  }
-}
+  return (
+    <div className="ui form">
+      <div className="ui center aligned">
+        <p className="header muted">Choose one option</p>
+      </div>
+      {error && <div className="muted">Please select one option</div>}
+      <div className="inline fields">
+        <div className="field">
+          <div className="ui radio">
+            <input
+              type="radio"
+              name="choice"
+              value="optionOne"
+              className="hidden"
+              onChange={(e) => setOption(e.target.value)}
+            />
+            <label>{props.question.optionOne.text}</label>
+          </div>
+        </div>
+        <div className="field">
+          <div className="ui radio">
+            <input
+              type="radio"
+              name="choice"
+              value="optionTwo"
+              className="hidden"
+              onChange={(e) => setOption(e.target.value)}
+            />
+            <label>{props.question.optionTwo.text}</label>
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        className="ui button primary fluid"
+        onClick={handleSubmit}
+      >
+        Answer
+      </button>
+    </div>
+  );
+};
 
 export default connect()(PollQuestionAnswer);

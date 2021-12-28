@@ -1,92 +1,85 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setAuthedUser } from "../actions/authedUser";
-import { Grid, Form, Button, Text, Page } from "tabler-react";
-import logo from "../assets/logo.svg";
 
-class Login extends Component {
-  state = {
-    authedUser: "",
-  };
+const Login = (props) => {
+  const [authedUserLogin, setAuthedUserLogin] = useState("");
+  const [open, setOpen] = useState(false);
+  const ref = useRef();
 
-  handleChange = (e) => {
-    e.preventDefault();
-    let authedUser = e.target.value;
-    authedUser = authedUser.toLowerCase().split(" ").join("");
-    this.setState({ authedUser: authedUser });
-  };
+  useEffect(() => {
+    const onBodyClick = (e) => {
+      if (ref.current.contains(e.target)) {
+        return;
+      }
+      setOpen(false);
+    };
 
-  handleAuthedUser = () => {
-    this.props.dispatch(setAuthedUser(this.state.authedUser));
+    document.body.addEventListener("click", onBodyClick, { capture: true });
 
+    return () => {
+      document.body.removeEventListener("click", onBodyClick, {
+        capture: true,
+      });
+    };
+  }, []);
+
+  const handleAuthedUser = () => {
+    props.dispatch(setAuthedUser(authedUserLogin));
     let prevRoutePath =
-      this.props.location.state !== undefined
-        ? this.props.location.state.previous.pathname
+      props.location.state !== undefined
+        ? props.location.state.previous.pathname
         : null;
 
-    prevRoutePath
-      ? this.props.history.push(prevRoutePath)
-      : this.props.history.push("/");
+    prevRoutePath ? props.history.push(prevRoutePath) : props.history.push("/");
+    props.location.state
+      ? props.history.push(props.location.state.previous.pathname)
+      : props.history.push("/");
   };
 
-  render() {
-    const { users } = this.props;
-    console.log("Logg page: ", this.state.authedUser);
-
-    return (
-      <Page>
-        <div className="container">
-          <div className="row">
-            <Grid.Col>
-              <div className="text-center mb-6">
-                <img src={logo} alt="logo" />
+  const { users } = props;
+  return (
+    <div className="ui form segment" ref={ref}>
+      <div className="field">
+        <h1 className="header">Login To Your Account</h1>
+        <label>Select User</label>
+        <div
+          className={`ui selection dropdown ${open ? "visible active" : ""}`}
+          onClick={() => setOpen(!open)}
+        >
+          <i className="icon dropdown"></i>
+          <div className="text">
+            {authedUserLogin !== "" && users[authedUserLogin].name}
+          </div>
+          <div className={`menu ${open ? "visible transition" : ""}`}>
+            {Object.values(users).map((user) => (
+              <div
+                className="item"
+                key={user.name}
+                onClick={() => setAuthedUserLogin(user.id)}
+              >
+                {user.name}
               </div>
-              <div>
-                <Form className="card" autoComplete="off">
-                  <div>
-                    <div>
-                      <p>Login to your account</p>
-                    </div>
-                    <div>
-                      <Form.Group label="Select User  ">
-                        <Form.Select
-                          onChange={this.handleChange}
-                          value={this.state.authedUser}
-                          position="append"
-                        >
-                          <option value="" default disabled defaultValue>
-                            Select User{" "}
-                          </option>
-                          {users.map((user) => (
-                            <option key={user.name}>{user.name}</option>
-                          ))}
-                        </Form.Select>
-                      </Form.Group>
-                      <Button
-                        block
-                        type="button"
-                        color="primary"
-                        onClick={this.handleAuthedUser}
-                      >
-                        Login
-                      </Button>
-                    </div>
-                  </div>
-                </Form>
-              </div>
-            </Grid.Col>
+            ))}
           </div>
         </div>
-      </Page>
-    );
-  }
-}
+        <button
+          type="submit"
+          className="ui button blue"
+          onClick={handleAuthedUser}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  );
+};
 
-function mapStateToProps({ setAuthedUser, users }) {
+function mapStateToProps(store) {
   return {
-    users: Object.values(users),
-    authedUser: setAuthedUser,
+    users: store.users,
+    authedUser: store.setAuthedUser,
   };
 }
 

@@ -1,95 +1,78 @@
-import React, { Component } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
-import SiteWrapper from "./SiteWrapper";
-import { Page, Text } from "tabler-react";
-import { Button, Card, Form } from "react-bootstrap";
-import { handleAddQuestion } from "../actions/shared";
 import { Redirect } from "react-router-dom";
+import { handleAddQuestion } from "../actions/shared";
+import SiteWrapper from "./SiteWrapper";
 
-class PollQuestionNew extends Component {
-  state = {
-    optionOneText: "",
-    optionTwoText: "",
-    redirect: false,
-  };
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { optionOneText, optionTwoText } = this.state;
+const PollQuestionNew = ({ users, questions, authedUser, dispatch }) => {
+  const [optionOneText, setOptionOneText] = useState("");
+  const [optionTwoText, setOptionTwoText] = useState("");
+  const [redirect, setRedirect] = useState(false);
 
-    this.props.dispatch(handleAddQuestion(optionOneText, optionTwoText));
-    this.setState({ redirect: true });
+  const handleSubmit = () => {
+    dispatch(handleAddQuestion(optionOneText, optionTwoText));
+    setRedirect(true);
   };
 
-  render() {
-    const { authedUser, users } = this.props;
-    console.log("New question: ", this.props);
-
-    if (this.state.redirect) {
-      return <Redirect to="/" />;
-    }
-    return (
-      <SiteWrapper>
-        <Page.Content>
-          <Card className="card card-profile">
-            <div className="card-header bg-dark text-center">
-              <Text className="h3 text-white mx-auto mb-5">
-                {users[authedUser].name}
-              </Text>
-            </div>
-            <Card.Body className="card-body text-center">
-              <img
-                alt="="
-                src={users[authedUser].avatarURL}
-                className="card-profile-img"
-              />
-
-              <h3 className="mb-3 text-left text-muted">Would you rather...</h3>
-
-              <form onSubmit={this.handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="text"
-                    placeholder="Option one..."
-                    onChange={(e) =>
-                      this.setState({ optionOneText: e.target.value })
-                    }
-                  />
-                </Form.Group>
-                <Form.Group className="bg-light mb-3">
-                  <Form.Text className="text-dark">OR</Form.Text>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="text"
-                    placeholder="Option Two..."
-                    onChange={(e) =>
-                      this.setState({ optionTwoText: e.target.value })
-                    }
-                  />
-                </Form.Group>
-                <Button
-                  type="submit"
-                  disabled={
-                    this.state.optionOneText === "" ||
-                    this.state.optionTwoText === ""
-                  }
-                >
-                  Ask Question
-                </Button>
-              </form>
-            </Card.Body>
-          </Card>
-        </Page.Content>
-      </SiteWrapper>
-    );
+  if (redirect) {
+    return <Redirect to={"/"} />;
   }
-}
-function mapStateToProps({ users, questions, setAuthedUser }) {
-  return {
-    authedUser: setAuthedUser,
-    questions,
-    users,
-  };
-}
 
+  return (
+    <div className="ui segment ">
+      <div className="ui card two fluid ">
+        <div className="eight wide column card ">
+          <div className=" ui grey inverted segment text-white center aligned ">
+            <div className="ui content centered aligned ">
+              <div className="ui header text text-white">
+                {users[authedUser].name}
+              </div>
+              <div className=" circular image ui">
+                <img alt="" src={users[authedUser].avatarURL} />
+              </div>
+            </div>
+          </div>
+          <div className="ui content mb-4 ">
+            <h2>Would you rather ...</h2>
+          </div>
+
+          <div className="ui fluid input">
+            <input
+              type="text"
+              placeholder="Enter option one..."
+              value={optionOneText}
+              onChange={(e) => setOptionOneText(e.target.value)}
+            />
+          </div>
+          <h4 className="center aligned m-2">OR</h4>
+          <div className="ui fluid input mb-4">
+            <input
+              type="text"
+              placeholder="Enter option two..."
+              value={optionTwoText}
+              onChange={(e) => setOptionTwoText(e.target.value)}
+            />
+          </div>
+          <button
+            className="button primary fluid ui"
+            type="submit"
+            disabled={optionOneText === "" || optionTwoText === ""}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const mapStateToProps = (store) => {
+  console.log("QUestion new", store);
+  return {
+    users: store.users,
+    authedUser: store.setAuthedUser,
+    questions: store.questions,
+  };
+};
 export default connect(mapStateToProps)(PollQuestionNew);
