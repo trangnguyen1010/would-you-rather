@@ -2,9 +2,8 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { handleAddQuestion } from "../actions/shared";
-import SiteWrapper from "./SiteWrapper";
 
-const PollQuestionNew = ({ users, questions, authedUser, dispatch }) => {
+const PollQuestionNew = ({ users, authedUser, dispatch }) => {
   const [optionOneText, setOptionOneText] = useState("");
   const [optionTwoText, setOptionTwoText] = useState("");
   const [redirect, setRedirect] = useState(false);

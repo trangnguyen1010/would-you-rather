@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import PollQuestionResult from "./PollQuestionResult";
 import PollQuestionAnswer from "./PollQuestionAnswer";
-import SiteWrapper from "./SiteWrapper";
 
 const PollQuestion = ({ users, authedUser, question, questions }) => {
   const answerQuestion = Object.keys(users[authedUser].answers).includes(

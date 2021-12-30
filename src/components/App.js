@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { handleInitialData } from "../actions/shared";
 import Login from "./Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -10,7 +10,7 @@ import PollQuestionNew from "./PollQuestionNew";
 import Leaderboard from "./Leaderboard";
 import SiteWrapper from "./SiteWrapper";
 
-const App = ({ authedUser, loading, dispatch }) => {
+const App = ({ authedUser, loading }) => {
   const PrivateRoute = ({
     component: Component,
     setAuthenticated,
@@ -23,9 +23,10 @@ const App = ({ authedUser, loading, dispatch }) => {
       }
     />
   );
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(handleInitialData());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Router>

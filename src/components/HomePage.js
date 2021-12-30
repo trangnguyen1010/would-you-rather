@@ -2,7 +2,6 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Link, Redirect } from "react-router-dom";
-import SiteWrapper from "./SiteWrapper";
 
 const ANSWERED = "ANSWERED";
 const UNANSWERED = "UNANSWERED";
@@ -108,11 +107,12 @@ const mapStateToProps = (state) => {
   if (authedUser) {
     answeredQuestion = Object.keys(users[authedUser].answers).sort(sort);
     unAnsweredQuestion = Object.keys(questions).sort(sort);
-    answeredQuestion.map((answerId) => {
-      unAnsweredQuestion = unAnsweredQuestion.filter(
-        (unanswerId) => answerId !== unanswerId
-      );
-    });
+    answeredQuestion.map(
+      (answerId) =>
+        (unAnsweredQuestion = unAnsweredQuestion.filter(
+          (unanswerId) => answerId !== unanswerId
+        ))
+    );
   }
 
   return {

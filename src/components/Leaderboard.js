@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Card, Table } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Text } from "tabler-react";
 
