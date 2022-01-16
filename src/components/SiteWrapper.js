@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { NavLink, withRouter } from "react-router-dom";
+import { NavLink, Redirect, withRouter } from "react-router-dom";
 import { setAuthedUser } from "../actions/authedUser";
 
 const SiteWrapper = (props) => {
@@ -10,6 +10,9 @@ const SiteWrapper = (props) => {
     props.history.push("/");
   };
 
+  if (authedUser === null) {
+    return <Redirect to={"/login"} />;
+  }
   return (
     <div className="ui segments">
       <div className="ui segment mb-5">
